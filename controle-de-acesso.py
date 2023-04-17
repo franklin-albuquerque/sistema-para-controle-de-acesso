@@ -10,12 +10,15 @@ def acessar_sistema():
         with open('banco_de_dados.db', 'r') as arquivo:
             for linha in arquivo:
                 usuario = literal_eval(linha)
-
                 for email_, senha_ in usuario.items():
-                    if email_ == email and senha_ == hashpw(senha.encode('utf-8'), senha_):
-                        print('Acesso autorizado')
-                    else:
-                        print('Acesso negado')
+                    if email_ == email:
+                        if senha_ == hashpw(senha.encode('utf-8'), senha_):
+                            print('Acesso autorizado')
+                        else:
+                            print('Acesso negado')
+                        return
+            else:
+                print('Não há nenhuma conta associada ao endereço de e-mail')
 
     except FileNotFoundError:
         print('Banco de dados não encontrado')
@@ -54,13 +57,16 @@ def opcoes(entrada):
     elif entrada == 2:
         acessar_sistema()
     else:
-        print('Opção invalida')
+        print('Opção inválida')
 
 def main():
-    print('1 - Cadastrar usuário\n2 - Acessar sistema')
-    entrada = int(input('Informe a opção desejada: '))
+    print('1 - Cadastrar novo usuário\n2 - Acessar o sistema')
 
-    opcoes(entrada)
+    try:
+        entrada = int(input('Digite o número da opção desejada: '))
+        opcoes(entrada)
+    except ValueError:
+        print('Erro de tipo de valor')
 
 if __name__ == '__main__':
     main()
