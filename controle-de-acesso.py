@@ -1,35 +1,45 @@
+from ast import literal_eval
 from bcrypt import hashpw, gensalt
 
-def verificar_senha():
-    senha = input('Digite sua senha: ')
+def acessar_sistema():
+    email_ = input('Digite seu endereço de e-mail: ')
+    senha_ = input('Digite sua senha: ')
 
-    with open('banco_de_dados.db', 'r') as arquivo:
-        hash = arquivo.read().encode('utf-8')
+    try:
+        with open('banco_de_dados.db', 'r') as arquivo:
+            for linha in arquivo:
+                usuario = literal_eval(linha)
 
-    if hashpw(senha.encode('utf-8'), hash) == hash:
-        print('Acesso autorizado')
-    else:
-        print('Acesso negado')
+                for email, senha in usuario.items():
+                    if email == email_ and senha == hashpw(senha_.encode('utf-8'), senha):
+                        print('Acesso autorizado')
+                    else:
+                        print('Acesso negado')
 
-def criptografar():
-    senha = input('Digite sua senha: ')
-    resultado = hashpw(senha.encode('utf-8'), gensalt(13))
+    except FileNotFoundError:
+        print('Banco de dados não encontrado')
 
-    print("Cadastrando no sistema...")
+def criptografar(senha):
+    return hashpw(senha.encode('utf-8'), gensalt(13))
+
+def cadastrar_usuario():
+    email = input('Digite seu endereço de e-mail: ')
+    senha = criptografar(input('Digite sua senha: '))
+
+    usuario = {email: senha}
+    
     with open('banco_de_dados.db', 'w') as arquivo:
-        arquivo.write(resultado.decode('utf-8'))
-    print('Registrado com sucesso', end='\n')
-
-    return resultado
+        arquivo.write(str(usuario))
+    print('Cadastrado com sucesso', end='\n')
 
 def main():
-    print('''1 - Registrar senha\n2 - Verificar senha''')
+    print('1 - Cadastrar usuário\n2 - Acessar sistema')
     opcao = int(input('Informe a opção desejada: '))
 
     if opcao == 1:
-        criptografar()
+        cadastrar_usuario()
     elif opcao == 2:
-        verificar_senha()
+        acessar_sistema()
     else:
         print('Opção invalida')
 
