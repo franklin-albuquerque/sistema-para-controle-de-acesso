@@ -1,5 +1,5 @@
 from ast import literal_eval
-from bcrypt import hashpw, gensalt
+from bcrypt import checkpw, hashpw, gensalt
 from os import path
 
 def acessar_sistema():
@@ -12,7 +12,7 @@ def acessar_sistema():
                 usuario = literal_eval(linha)
                 for email_, senha_ in usuario.items():
                     if email_ == email:
-                        if senha_ == hashpw(senha.encode('utf-8'), senha_):
+                        if checkpw(senha.encode('utf-8'), senha_):
                             print('Acesso autorizado')
                         else:
                             print('Acesso negado')
