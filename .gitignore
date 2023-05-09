@@ -1,4 +1,3 @@
-@@ -0,0 +1,3 @@
-# Ignorar arquivos com a extensão .db
-*.db
+# Ignora arquivos com a extensão .env
+*.env
 
